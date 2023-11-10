@@ -5,9 +5,6 @@ import tkinter as tk
 from tkinter import simpledialog
 
 def open_json_file():
-    root = tk.Tk()
-    root.withdraw()  # Skryje hlavní okno tkinter
-
     # Zobrazí vyskakovací okno pro zadání názvu souboru
     json_file_name = simpledialog.askstring("Otevřít JSON soubor", "Zadejte název JSON souboru:")
     if json_file_name:
@@ -113,4 +110,6 @@ sqlite_db_path = f'{json_file_name}.db'
 create_and_populate_db(json_file_path, sqlite_db_path)
 
 if __name__ == "__main__":
+    root = tk.Tk()
+    root.withdraw()  # Skryje hlavní okno tkinter
     open_json_file()
