@@ -114,24 +114,3 @@ create_and_populate_db(json_file_path, sqlite_db_path)
 
 if __name__ == "__main__":
     open_json_file()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if __name__ == "__main__":
-    open_json_file()
