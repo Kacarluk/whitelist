@@ -1,50 +1,41 @@
 import json
 import sqlite3
 
-import tkinter as tk
-from tkinter import simpledialog
+# Definování cesty JSON souboru
+json_file_path = '3_164941_164845.json'
 
-def open_json_file():
-    # Zobrazí vyskakovací okno pro zadání názvu souboru
-    json_file_name = simpledialog.askstring("Otevřít JSON soubor", "Zadejte název JSON souboru:")
-    if json_file_name:
-        json_file_path = os.path.join(os.getcwd(), json_file_name)
+# Cesta k SQL souboru
+sqlite_db_path = f'{json_file_path}.db' #Zkopíruje i příponu!
 
-        try:
-            with open(json_file_path, 'r', encoding='utf-8') as file:
-                json_data = json.load(file)
-                create_and_populate_db(json_data)  # Předá načtená data funkci create_and_populate_db
-        except FileNotFoundError:
-            print(f"Soubor '{json_file_name}' nebyl nalezen.")
-        except json.JSONDecodeError:
-            print(f"Soubor '{json_file_name}' není platný JSON soubor.")
-        except Exception as e:
-            print(f"Chyba při zpracování souboru '{json_file_name}': {e}")
-
-def create_and_populate_db(json_data):
+# Přečtení JSON souboru
+with open(json_file_path, 'r') as file:
+    data = json.load(file)
+    
+def create_and_populate_db(data, sqlite_db_path):
+    
     # Kód pro vytváření a naplňování databáze
-    contracts_new = json_data.get('Contracts.New', [])
+    contracts_new_data = data.get('Contracts.New', [])
 
    # Definování SQL
-    drop_table_command = "DROP TABLE IF EXISTS contract_new;"
+    drop_table_command = "DROP TABLE IF EXISTS contracts_new;"
     create_table_command = """
     CREATE TABLE contracts_new (
         Id INTEGER PRIMARY KEY AUTOINCREMENT,
         ConId INTEGER,
         WLIdentId INTEGER,
-        WLValidFrom DATETIME,
-        WLValidTo DATETIME,
+        WLValidFrom TEXT,
+        WLValidTo TEXT,
         DiscountCard_CP BYTE,
         DiscountCard_NetworkID INTEGER,
         DiscountCard_WLIDType BYTE,
-        DiscountCard_WLIDLogicalNum INTEGER,  #Dle specifikace MOS string
+        DiscountCard_WLIDLogicalNum STRING,
         TimeCoupon_CP BYTE,
         TimeCoupon_TP BYTE,
-        TimeCoupon_WLZones TEXT,            #String jako TEXT
+        TimeCoupon_WLZones TEXT,
         TimeCoupon_WLSupZones TEXT,
         TimeCoupon_NetworkID INTEGER,
         TimeCoupon_WLIDType BYTE,
-        TimeCoupon_WLIDLogicalNum INTEGER  #Dle specifikace MOS string
+        TimeCoupon_WLIDLogicalNum STRING
     );
     """
     
@@ -93,7 +84,7 @@ def create_and_populate_db(json_data):
             TimeCoupon_WLIDLogicalNum, TimeCoupon_WLIDType
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """, data_tuple)
-        
+                
         # Commit
         conn.commit()
     
@@ -103,13 +94,5 @@ def create_and_populate_db(json_data):
     
     conn.close()
 
-# Cesta k SQL souboru
-sqlite_db_path = f'{json_file_name}.db'
-
-# Call the function with the paths to the JSON file and SQLite database
-create_and_populate_db(json_file_path, sqlite_db_path)
-
-if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw()  # Skryje hlavní okno tkinter
-    open_json_file()
+# Zavolání funkce
+create_and_populate_db(data, sqlite_db_path)
