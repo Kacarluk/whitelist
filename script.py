@@ -77,7 +77,7 @@ def create_and_populate_db(data, sqlite_db_path):
             time_coupon_new.get('WLIDLogicalNum')  
         )
         
-        # Vložení dat
+        # Vložení dat - nadefinování
         cursor.execute("""
         INSERT INTO contracts_new (
             ConId, WLIdentId, WLValidFrom, WLValidTo,
@@ -88,15 +88,16 @@ def create_and_populate_db(data, sqlite_db_path):
             TimeCoupon_WLIDLogicalNum, TimeCoupon_WLIDType
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """, data_tuple)
-                
-        # Commit
-        conn.commit()
-    
+                  
     # Vložení do tabulky
     for contracts_new in contracts_new_data:
         insert_contracts_new(contracts_new)
+
+        # Commit
+        conn.commit()
         
-        
+    ################################### CONTRACTS CHANGE
+    
     # Kód pro vytváření a naplňování databáze
     contracts_change_data = data.get('Contracts.Change', [])
 
@@ -157,7 +158,7 @@ def create_and_populate_db(data, sqlite_db_path):
             time_coupon_change.get('WLIDLogicalNum')  
         )
         
-        # Vložení dat
+        # Vložení dat - nadefinování
         cursor.execute("""
         INSERT INTO contracts_change (
             ConId, WLIdentId, WLValidFrom, WLValidTo,
@@ -169,12 +170,42 @@ def create_and_populate_db(data, sqlite_db_path):
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """, data_tuple)
                 
-        # Commit
-        conn.commit()
     
     # Vložení do tabulky
     for contracts_change in contracts_change_data:
         insert_contracts_change(contracts_change)   
+        
+    # Commit
+    conn.commit()
+    
+    ################################### CONTRACTS DELETE
+    
+    # Kód pro vytváření a naplňování databáze
+    contracts_delete_data = data.get('Contracts.Delete', [])
+    
+    # Definování SQL
+    drop_table_command = "DROP TABLE IF EXISTS contracts_delete;"
+    create_table_command = """
+    CREATE TABLE contracts_delete (
+        ConId INTEGER
+        );
+        """
+
+    # Vytvoření SQL databáze na disku
+    conn = sqlite3.connect(sqlite_db_path)
+    cursor = conn.cursor()
+
+    # Smazání staré tabulky, pokud existuje
+    cursor.execute(drop_table_command)
+    # Vytvoření nové tabulky dle parametrů
+    cursor.execute(create_table_command)
+
+    # Vložení dat
+    for contracts_delete in contracts_delete_data:
+        cursor.execute('INSERT INTO contracts_delete (ConId) VALUES (?)', (contracts_delete,))
+
+    # Commit the changes to the database
+    conn.commit()
     
     
     conn.close()
