@@ -1,9 +1,20 @@
 import json
 import sqlite3
 import os
+import tkinter as tk
+from tkinter import filedialog
 
-# Definování cesty JSON souboru
-json_file_path = '3_164941_164845.json'
+def get_json_file_path():
+    root = tk.Tk()
+    root.withdraw()  # Skryje hlavní okno tkinter
+
+    # Získání názvu souboru od uživatele pomocí vyskakovacího okna
+    json_file_path = filedialog.askopenfilename(title="Vyberte JSON soubor", filetypes=[("JSON files", "*.json")])
+
+    return json_file_path
+
+# Získání názvu JSON souboru od uživatele
+json_file_path = get_json_file_path()
 
 # Odstranění přípony .json z názvu souboru
 base_name = os.path.splitext(json_file_path)[0]
@@ -27,8 +38,8 @@ def create_and_populate_db(data, sqlite_db_path):
         Id INTEGER PRIMARY KEY AUTOINCREMENT,
         ConId INTEGER,
         WLIdentId INTEGER,
-        WLValidFrom TEXT,
-        WLValidTo TEXT,
+        WLValidFrom DATE,
+        WLValidTo DATE,
         DiscountCard_CP BYTE,
         DiscountCard_NetworkID INTEGER,
         DiscountCard_WLIDType BYTE,
@@ -80,12 +91,21 @@ def create_and_populate_db(data, sqlite_db_path):
         # Vložení dat - nadefinování
         cursor.execute("""
         INSERT INTO contracts_new (
-            ConId, WLIdentId, WLValidFrom, WLValidTo,
-            DiscountCard_CP, DiscountCard_NetworkID,
-            DiscountCard_WLIDType, DiscountCard_WLIDLogicalNum,
-            TimeCoupon_CP, TimeCoupon_TP, TimeCoupon_WLZones,
-            TimeCoupon_WLSupZones, TimeCoupon_NetworkID, 
-            TimeCoupon_WLIDLogicalNum, TimeCoupon_WLIDType
+            ConId, 
+            WLIdentId, 
+            WLValidFrom, 
+            WLValidTo,
+            DiscountCard_CP, 
+            DiscountCard_NetworkID,
+            DiscountCard_WLIDType, 
+            DiscountCard_WLIDLogicalNum,
+            TimeCoupon_CP, 
+            TimeCoupon_TP, 
+            TimeCoupon_WLZones,
+            TimeCoupon_WLSupZones, 
+            TimeCoupon_NetworkID, 
+            TimeCoupon_WLIDLogicalNum, 
+            TimeCoupon_WLIDType
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """, data_tuple)
                   
@@ -108,8 +128,8 @@ def create_and_populate_db(data, sqlite_db_path):
         Id INTEGER PRIMARY KEY AUTOINCREMENT,
         ConId INTEGER,
         WLIdentId INTEGER,
-        WLValidFrom TEXT,
-        WLValidTo TEXT,
+        WLValidFrom DATE,
+        WLValidTo DATE,
         DiscountCard_CP BYTE,
         DiscountCard_NetworkID INTEGER,
         DiscountCard_WLIDType BYTE,
@@ -161,12 +181,21 @@ def create_and_populate_db(data, sqlite_db_path):
         # Vložení dat - nadefinování
         cursor.execute("""
         INSERT INTO contracts_change (
-            ConId, WLIdentId, WLValidFrom, WLValidTo,
-            DiscountCard_CP, DiscountCard_NetworkID,
-            DiscountCard_WLIDType, DiscountCard_WLIDLogicalNum,
-            TimeCoupon_CP, TimeCoupon_TP, TimeCoupon_WLZones,
-            TimeCoupon_WLSupZones, TimeCoupon_NetworkID, 
-            TimeCoupon_WLIDLogicalNum, TimeCoupon_WLIDType
+            ConId, 
+            WLIdentId, 
+            WLValidFrom, 
+            WLValidTo,
+            DiscountCard_CP, 
+            DiscountCard_NetworkID,
+            DiscountCard_WLIDType, 
+            DiscountCard_WLIDLogicalNum,
+            TimeCoupon_CP, 
+            TimeCoupon_TP, 
+            TimeCoupon_WLZones,
+            TimeCoupon_WLSupZones, 
+            TimeCoupon_NetworkID, 
+            TimeCoupon_WLIDLogicalNum, 
+            TimeCoupon_WLIDType
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         """, data_tuple)
                 
@@ -224,7 +253,7 @@ def create_and_populate_db(data, sqlite_db_path):
         WLToken1Ver BYTE,
         WLCardType BYTE,
         WLCardStatus BYTE,
-        WLCardExpdate TEXT,
+        WLCardExpdate DATE,
         WLMOSPssngrAcct INTEGER,
         WLToken2 TEXT,
         WLToken2Ver BYTE
@@ -294,7 +323,7 @@ def create_and_populate_db(data, sqlite_db_path):
         WLToken1Ver BYTE,
         WLCardType BYTE,
         WLCardStatus BYTE,
-        WLCardExpdate TEXT,
+        WLCardExpdate DATE,
         WLMOSPssngrAcct INTEGER,
         WLToken2 TEXT,
         WLToken2Ver BYTE
@@ -525,9 +554,9 @@ def create_and_populate_db(data, sqlite_db_path):
         WLFormatVer	BYTE,
         Seq	INTEGER,
         SeqPrev	INTEGER,
-        WLScopeTimeTo	TEXT,
+        WLScopeTimeTo	DATE,
         WLTokenVer	BYTE,
-        WLTest	TEXT,
+        WLTest	CHAR,
         SigNo	BYTE,
         Sig TEXT
     );
