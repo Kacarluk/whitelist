@@ -35,8 +35,8 @@ def create_and_populate_db(data, sqlite_db_path):
         DiscountCard_WLIDLogicalNum STRING,
         TimeCoupon_CP BYTE,
         TimeCoupon_TP BYTE,
-        TimeCoupon_WLZones TEXT,
-        TimeCoupon_WLSupZones TEXT,
+        TimeCoupon_WLZones STRING,
+        TimeCoupon_WLSupZones STRING,
         TimeCoupon_NetworkID INTEGER,
         TimeCoupon_WLIDType BYTE,
         TimeCoupon_WLIDLogicalNum STRING
@@ -116,8 +116,8 @@ def create_and_populate_db(data, sqlite_db_path):
         DiscountCard_WLIDLogicalNum STRING,
         TimeCoupon_CP BYTE,
         TimeCoupon_TP BYTE,
-        TimeCoupon_WLZones TEXT,
-        TimeCoupon_WLSupZones TEXT,
+        TimeCoupon_WLZones STRING,
+        TimeCoupon_WLSupZones STRING,
         TimeCoupon_NetworkID INTEGER,
         TimeCoupon_WLIDType BYTE,
         TimeCoupon_WLIDLogicalNum STRING
@@ -187,6 +187,7 @@ def create_and_populate_db(data, sqlite_db_path):
     drop_table_command = "DROP TABLE IF EXISTS contracts_delete;"
     create_table_command = """
     CREATE TABLE contracts_delete (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
         ConId INTEGER
         );
         """
@@ -200,9 +201,181 @@ def create_and_populate_db(data, sqlite_db_path):
     # Vytvoření nové tabulky dle parametrů
     cursor.execute(create_table_command)
 
-    # Vložení dat
+    # Vložení do tabulky
     for contracts_delete in contracts_delete_data:
         cursor.execute('INSERT INTO contracts_delete (ConId) VALUES (?)', (contracts_delete,))
+    
+
+    # Commit the changes to the database
+    conn.commit()
+    
+    ###################################### IDENTIFIERS NEW
+    
+    # Kód pro vytváření a naplňování databáze
+    identifiers_new_data = data.get('Identifiers.New', [])
+
+   # Definování SQL
+    drop_table_command = "DROP TABLE IF EXISTS identifiers_new;"
+    create_table_command = """
+    CREATE TABLE identifiers_new (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        WLMOSIdentId INTEGER,
+        WLToken1 TEXT,
+        WLToken1Ver BYTE,
+        WLCardType BYTE,
+        WLCardStatus BYTE,
+        WLCardExpdate TEXT,
+        WLMOSPssngrAcct INTEGER,
+        WLToken2 TEXT,
+        WLToken2Ver BYTE
+    );
+    """
+     
+     # Vytvoření SQL databáze na disku
+    conn = sqlite3.connect(sqlite_db_path)
+    cursor = conn.cursor()
+    
+    # Smazání staré tabulky, pokud existuje
+    cursor.execute(drop_table_command)
+    # Vytvoření nové tabulky dle parametrů
+    cursor.execute(create_table_command)
+    
+    # Definování funkce na vložení dat do tabulky
+    def insert_identifiers_new(identifiers_new):
+        
+        # Příprava dat pro vložení
+        data_tuple = (
+        identifiers_new.get('WLIdentId'),
+        identifiers_new.get('WLToken1'),
+        identifiers_new.get('WLToken1Ver'),
+        identifiers_new.get('WLCardType'),
+        identifiers_new.get('WLCardStatus'),
+        identifiers_new.get('WLCardExpdate'),
+        identifiers_new.get('WLMOSPssngrAcct'),
+        identifiers_new.get('WLToken2'),
+        identifiers_new.get('WLToken2Ver')
+        )
+        
+        # Vložení dat - nadefinování
+        cursor.execute("""
+        INSERT INTO identifiers_new (
+            WLMOSIdentId,
+            WLToken1,
+            WLToken1Ver,
+            WLCardType,
+            WLCardStatus,
+            WLCardExpdate,
+            WLMOSPssngrAcct,
+            WLToken2,
+            WLToken2Ver
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """, data_tuple)
+                
+    
+    # Vložení do tabulky
+    for identifiers_new in identifiers_new_data:
+        insert_identifiers_new(identifiers_new)   
+        
+    # Commit
+    conn.commit()
+    
+    ###################################### IDENTIFIERS CHANGE
+    
+    # Kód pro vytváření a naplňování databáze
+    identifiers_change_data = data.get('Identifiers.Change', [])
+
+   # Definování SQL
+    drop_table_command = "DROP TABLE IF EXISTS identifiers_change;"
+    create_table_command = """
+    CREATE TABLE identifiers_change (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        WLMOSIdentId INTEGER,
+        WLToken1 TEXT,
+        WLToken1Ver BYTE,
+        WLCardType BYTE,
+        WLCardStatus BYTE,
+        WLCardExpdate TEXT,
+        WLMOSPssngrAcct INTEGER,
+        WLToken2 TEXT,
+        WLToken2Ver BYTE
+    );
+    """
+     
+     # Vytvoření SQL databáze na disku
+    conn = sqlite3.connect(sqlite_db_path)
+    cursor = conn.cursor()
+    
+    # Smazání staré tabulky, pokud existuje
+    cursor.execute(drop_table_command)
+    # Vytvoření nové tabulky dle parametrů
+    cursor.execute(create_table_command)
+    
+    # Definování funkce na vložení dat do tabulky
+    def insert_identifiers_change(identifiers_change):
+        
+        # Příprava dat pro vložení
+        data_tuple = (
+        identifiers_change.get('WLIdentId'),
+        identifiers_change.get('WLToken1'),
+        identifiers_change.get('WLToken1Ver'),
+        identifiers_change.get('WLCardType'),
+        identifiers_change.get('WLCardStatus'),
+        identifiers_change.get('WLCardExpdate'),
+        identifiers_change.get('WLMOSPssngrAcct'),
+        identifiers_change.get('WLToken2'),
+        identifiers_change.get('WLToken2Ver')
+        )
+        
+        # Vložení dat - nadefinování
+        cursor.execute("""
+        INSERT INTO identifiers_change (
+            WLMOSIdentId,
+            WLToken1,
+            WLToken1Ver,
+            WLCardType,
+            WLCardStatus,
+            WLCardExpdate,
+            WLMOSPssngrAcct,
+            WLToken2,
+            WLToken2Ver
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """, data_tuple)
+                
+    
+    # Vložení do tabulky
+    for identifiers_change in identifiers_change_data:
+        insert_identifiers_change(identifiers_change)   
+        
+    # Commit
+    conn.commit()
+    
+    ################################### IDENTIFIERS DELETE
+    
+    # Kód pro vytváření a naplňování databáze
+    identifiers_delete_data = data.get('Identifiers.Delete', [])
+    
+    # Definování SQL
+    drop_table_command = "DROP TABLE IF EXISTS identifiers_delete;"
+    create_table_command = """
+    CREATE TABLE identifiers_delete (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        VLMOSIdentId INTEGER
+        );
+        """
+
+    # Vytvoření SQL databáze na disku
+    conn = sqlite3.connect(sqlite_db_path)
+    cursor = conn.cursor()
+
+    # Smazání staré tabulky, pokud existuje
+    cursor.execute(drop_table_command)
+    # Vytvoření nové tabulky dle parametrů
+    cursor.execute(create_table_command)
+
+    # Vložení do tabulky
+    for identifiers_delete in identifiers_delete_data:
+        cursor.execute('INSERT INTO identifiers_delete (VLMOSIdentId) VALUES (?)', (identifiers_delete,))
+    
 
     # Commit the changes to the database
     conn.commit()
