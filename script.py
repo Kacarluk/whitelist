@@ -380,6 +380,134 @@ def create_and_populate_db(data, sqlite_db_path):
     # Commit the changes to the database
     conn.commit()
     
+      ################################### CLIENTS NEW
+    
+    # Kód pro vytváření a naplňování databáze
+    clients_new_data = data.get('Clients.New', [])
+
+   # Definování SQL
+    drop_table_command = "DROP TABLE IF EXISTS clients_new;"
+    create_table_command = """
+    CREATE TABLE clients_new (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        WLMOSPssngrAcct INTEGER,
+        PersonalData TEXT
+    );
+    """
+     
+     # Vytvoření SQL databáze na disku
+    conn = sqlite3.connect(sqlite_db_path)
+    cursor = conn.cursor()
+    
+    # Smazání staré tabulky, pokud existuje
+    cursor.execute(drop_table_command)
+    # Vytvoření nové tabulky dle parametrů
+    cursor.execute(create_table_command)
+    
+    # Definování funkce na vložení dat do tabulky
+    def insert_clients_new(clients_new):
+        
+        # Příprava dat pro vložení
+        data_tuple = (
+        clients_new.get('WLMOSPssngrAcct'),
+        " "
+        )
+        
+        # Vložení dat - nadefinování
+        cursor.execute("""
+        INSERT INTO clients_new (
+            WLMOSPssngrAcct,
+            PersonalData
+        ) VALUES (?, ?);
+        """, data_tuple)
+                
+    
+    # Vložení do tabulky
+    for clients_new in clients_new_data:
+        insert_clients_new(clients_new)   
+        
+    # Commit
+    conn.commit()
+    
+    ################################### CLIENTS CHANGE
+    
+    # Kód pro vytváření a naplňování databáze
+    clients_change_data = data.get('Clients.Change', [])
+
+   # Definování SQL
+    drop_table_command = "DROP TABLE IF EXISTS clients_change;"
+    create_table_command = """
+    CREATE TABLE clients_change (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        WLMOSPssngrAcct INTEGER,
+        PersonalData TEXT
+    );
+    """
+     
+     # Vytvoření SQL databáze na disku
+    conn = sqlite3.connect(sqlite_db_path)
+    cursor = conn.cursor()
+    
+    # Smazání staré tabulky, pokud existuje
+    cursor.execute(drop_table_command)
+    # Vytvoření nové tabulky dle parametrů
+    cursor.execute(create_table_command)
+    
+    # Definování funkce na vložení dat do tabulky
+    def insert_clients_change(clients_change):
+        
+        # Příprava dat pro vložení
+        data_tuple = (
+        clients_change.get('WLMOSPssngrAcct'),
+        " "
+        )
+        
+        # Vložení dat - nadefinování
+        cursor.execute("""
+        INSERT INTO clients_change (
+            WLMOSPssngrAcct,
+            PersonalData
+        ) VALUES (?, ?);
+        """, data_tuple)
+                
+    
+    # Vložení do tabulky
+    for clients_change in clients_change_data:
+        insert_clients_change(clients_change)   
+        
+    # Commit
+    conn.commit()
+    
+    ################################### CLIENTS DELETE
+    
+    # Kód pro vytváření a naplňování databáze
+    clients_delete_data = data.get('Clients.Delete', [])
+    
+    # Definování SQL
+    drop_table_command = "DROP TABLE IF EXISTS clients_delete;"
+    create_table_command = """
+    CREATE TABLE clients_delete (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        WLMOSPssngrAcct INTEGER
+        );
+        """
+
+    # Vytvoření SQL databáze na disku
+    conn = sqlite3.connect(sqlite_db_path)
+    cursor = conn.cursor()
+
+    # Smazání staré tabulky, pokud existuje
+    cursor.execute(drop_table_command)
+    # Vytvoření nové tabulky dle parametrů
+    cursor.execute(create_table_command)
+
+    # Vložení do tabulky
+    for clients_delete in clients_delete_data:
+        cursor.execute('INSERT INTO clients_delete (WLMOSPssngrAcct) VALUES (?)', (clients_delete,))
+    
+
+    # Commit the changes to the database
+    conn.commit()
     
     conn.close()
 
