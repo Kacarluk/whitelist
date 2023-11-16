@@ -509,6 +509,76 @@ def create_and_populate_db(data, sqlite_db_path):
     # Commit the changes to the database
     conn.commit()
     
+      ################################### HEADER
+    
+    # Kód pro vytváření a naplňování databáze
+    header_data = data.get('Header', {})
+    footer_data = data.get('Footer', {})
+
+
+   # Definování SQL
+    drop_table_command = "DROP TABLE IF EXISTS header;"
+    create_table_command = """
+    CREATE TABLE header (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        WLVer	BYTE,
+        WLFormatVer	BYTE,
+        Seq	INTEGER,
+        SeqPrev	INTEGER,
+        WLScopeTimeTo	TEXT,
+        WLTokenVer	BYTE,
+        WLTest	TEXT,
+        SigNo	BYTE,
+        Sig TEXT
+    );
+    """
+     
+     # Vytvoření SQL databáze na disku
+    conn = sqlite3.connect(sqlite_db_path)
+    cursor = conn.cursor()
+    
+    # Smazání staré tabulky, pokud existuje
+    cursor.execute(drop_table_command)
+    # Vytvoření nové tabulky dle parametrů
+    cursor.execute(create_table_command)
+    
+    # Definování funkce na vložení dat do tabulky
+    def insert_data(header, footer):
+        # Příprava dat pro vložení
+        data_tuple = (
+            header.get('WLVer'),
+            header.get('WLFormatVer'),
+            header.get('Seq'),
+            header.get('SeqPrev'),
+            header.get('WLScopeTimeTo'),
+            header.get('WLTokenVer'),
+            header.get('WLTest'),
+            header.get('SigNo'),
+            footer.get('Sig')
+        )
+        
+        # Vložení dat - nadefinování
+        cursor.execute("""
+        INSERT INTO header (
+        WLVer,
+        WLFormatVer,
+        Seq,
+        SeqPrev,
+        WLScopeTimeTo,
+        WLTokenVer,
+        WLTest,
+        SigNo,
+        Sig
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+        """, data_tuple)
+                
+    
+    # Vložení do tabulky
+    insert_data(header_data, footer_data)
+        
+    # Commit
+    conn.commit()
+    
     conn.close()
 
 # Zavolání funkce
