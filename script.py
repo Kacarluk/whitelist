@@ -1,3 +1,6 @@
+import cProfile
+import io
+import pstats
 import json
 import sqlite3
 import os
@@ -21,6 +24,12 @@ base_name = os.path.splitext(json_file_path)[0]
 
 # Cesta k SQL souboru
 sqlite_db_path = f'{base_name}.db'
+
+# Definice profileru
+profiler = cProfile.Profile()
+
+# Spuštění profilování
+profiler.enable()
 
 # Přečtení JSON souboru
 with open(json_file_path, 'r') as file:
@@ -113,8 +122,8 @@ def create_and_populate_db(data, sqlite_db_path):
     for contracts_new in contracts_new_data:
         insert_contracts_new(contracts_new)
 
-        # Commit
-        conn.commit()
+    # Commit
+    conn.commit()
         
     ################################### CONTRACTS CHANGE
     
@@ -612,3 +621,19 @@ def create_and_populate_db(data, sqlite_db_path):
 
 # Zavolání funkce
 create_and_populate_db(data, sqlite_db_path)
+
+# Zastavení profilování
+profiler.disable()
+
+# Vytvoření textového souboru pro výsledky profileru
+output_file_path = 'profilovani_vysledky.txt'
+with io.StringIO() as stream:
+    # Zápis výsledků profilování do textového souboru
+    stats = pstats.Stats(profiler, stream=stream)
+    stats.sort_stats('cumulative')
+    stats.print_stats()
+    
+    with open(output_file_path, 'w') as output_file:
+        output_file.write(stream.getvalue())
+
+print(f'Výsledky profilování byly uloženy do souboru: {output_file_path}')
